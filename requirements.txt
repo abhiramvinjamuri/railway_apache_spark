@@ -1,6 +1,5 @@
 streamlit
 pandas
 plotly
-pyspark
-scikit-learn
-joblib
+pyspark==4.0.4
+numpy
