@@ -162,16 +162,29 @@ from pyspark.sql import SparkSession
 @st.cache_resource
 def get_spark():
     import os
+    import sys
     import shutil
-    import subprocess
-    from pathlib import Path
     from pyspark.sql import SparkSession
 
     java = shutil.which("java")
-
     if not java:
         raise RuntimeError("Java was not found in PATH.")
 
+    os.environ["JAVA_HOME"] = os.path.dirname(
+        os.path.dirname(os.path.realpath(java))
+    )
+    os.environ["PYSPARK_PYTHON"] = sys.executable
+    os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
+
+    spark = (
+        SparkSession.builder
+        .appName("RailwayDelayRiskPrediction")
+        .master("local[*]")
+        .config("spark.driver.memory", "1g")
+        .getOrCreate()
+    )
+
+    return spark
 
 # --------------------------------------------------
 # LOADING SCREEN
@@ -447,13 +460,6 @@ try:
     preprocessor, models = load_models()
 
     loading_placeholder.empty()
-
-except Exception as e:
-    loading_placeholder.empty()
-    st.error("Unable to load Spark, the dataset, or the exported models.")
-    st.exception(e)
-    st.stop()
-
 
 except Exception as e:
     loading_placeholder.empty()
