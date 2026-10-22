@@ -176,14 +176,27 @@ from pyspark.sql import SparkSession
 
 @st.cache_resource
 def get_spark():
+    import os
+    import shutil
+    from pyspark.sql import SparkSession
+
+    java_path = shutil.which("java")
+
+    if java_path is None:
+        raise RuntimeError(
+            "Java is not installed or is missing from PATH. "
+            "Check packages.txt."
+        )
+
+    st.write("Java executable:", java_path)
+
     return (
         SparkSession.builder
         .appName("RailwayDelayRiskPrediction")
-        .master("local[*]")
+        .master("local[2]")
         .config("spark.driver.memory", "1g")
         .getOrCreate()
     )
-
 
 @st.cache_resource
 def load_models():
