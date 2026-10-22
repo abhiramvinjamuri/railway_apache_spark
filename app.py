@@ -118,8 +118,8 @@ st.caption(
 
 
 
-if not DATA_PATH.exists():
-    st.error(f"Dataset not found: {DATA_PATH}")
+if not DATA_URL:
+    st.error("Dataset URL is not configured.")
     st.stop()
 
 required_paths = [
