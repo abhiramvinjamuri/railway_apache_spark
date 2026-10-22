@@ -178,17 +178,41 @@ from pyspark.sql import SparkSession
 def get_spark():
     import os
     import shutil
+    import subprocess
+    from pathlib import Path
     from pyspark.sql import SparkSession
 
-    java_path = shutil.which("java")
+    java = shutil.which("java")
 
-    if java_path is None:
-        raise RuntimeError(
-            "Java is not installed or is missing from PATH. "
-            "Check packages.txt."
-        )
+    if not java:
+        raise RuntimeError("Java was not found in PATH.")
 
-    st.write("Java executable:", java_path)
+    # Resolve the actual Java executable and derive JAVA_HOME.
+    java_real = Path(java).resolve()
+    java_home = java_real.parent.parent
+    os.environ["JAVA_HOME"] = str(java_home)
+
+    # Test whether Java itself starts successfully.
+    result = subprocess.run(
+        [java, "-version"],
+        capture_output=True,
+        text=True,
+        timeout=15
+    )
+
+    st.write("Java executable:", java)
+    st.write("Resolved Java path:", str(java_real))
+    st.write("JAVA_HOME:", os.environ["JAVA_HOME"])
+    st.write("Java exit code:", result.returncode)
+
+    if result.stdout:
+        st.code(result.stdout)
+
+    if result.stderr:
+        st.code(result.stderr)
+
+    if result.returncode != 0:
+        raise RuntimeError("Java failed to start. See diagnostic output above.")
 
     return (
         SparkSession.builder
@@ -197,31 +221,6 @@ def get_spark():
         .config("spark.driver.memory", "1g")
         .getOrCreate()
     )
-
-@st.cache_resource
-def load_models():
-    preprocessor = PipelineModel.load(
-        str(MODEL_DIR / "preprocessor")
-    )
-
-    lr = LogisticRegressionModel.load(
-        str(MODEL_DIR / "logistic_regression")
-    )
-
-    dt = DecisionTreeClassificationModel.load(
-        str(MODEL_DIR / "decision_tree")
-    )
-
-    rf = RandomForestClassificationModel.load(
-        str(MODEL_DIR / "random_forest")
-    )
-
-    return preprocessor, {
-        "Logistic Regression": lr,
-        "Decision Tree": dt,
-        "Random Forest": rf,
-    }
-
 
 # --------------------------------------------------
 # LOADING SCREEN
