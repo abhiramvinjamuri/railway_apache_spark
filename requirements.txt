@@ -1,4 +1,4 @@
 streamlit
-pyspark==4.0.4
+pyspark
 pandas
 requests
