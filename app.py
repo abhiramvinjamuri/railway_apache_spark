@@ -172,17 +172,15 @@ from pyspark.sql import SparkSession
 
 os.environ.setdefault("PYSPARK_PYTHON", sys.executable)
 os.environ.setdefault("PYSPARK_DRIVER_PYTHON", sys.executable)
-@st.cache_resource
-# Set these defaults before creating the Spark session
+from pyspark.sql import SparkSession
+
 @st.cache_resource
 def get_spark():
     return (
         SparkSession.builder
-        .appName("RailwayDelayDashboard")
+        .appName("RailwayDelayRiskPrediction")
         .master("local[*]")
-        .config("spark.sql.shuffle.partitions", "8")
-        .config("spark.pyspark.python", sys.executable)
-        .config("spark.pyspark.driver.python", sys.executable)
+        .config("spark.driver.memory", "1g")
         .getOrCreate()
     )
 
