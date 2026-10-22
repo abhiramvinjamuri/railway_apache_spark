@@ -474,11 +474,7 @@ except Exception as e:
     loading_placeholder.empty()
     st.error("Unable to load Spark, the dataset, or the exported models.")
     st.exception(e)
-    st.info(
-        "Check Java, the model folders, and Spark compatibility."
-    )
     st.stop()
-
 
 
 loading_placeholder = show_loading_screen()
