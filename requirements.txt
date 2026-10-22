@@ -3,3 +3,4 @@ pandas
 plotly
 pyspark==4.0.4
 numpy
+requests
