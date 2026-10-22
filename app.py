@@ -211,21 +211,22 @@ def get_spark():
 # LOADING SCREEN
 # --------------------------------------------------
 
+
 @st.cache_resource
 def load_models():
     from pyspark.ml import PipelineModel
     from pyspark.ml.classification import (
-        LogisticRegressionClassificationModel,
+        LogisticRegressionModel,
         DecisionTreeClassificationModel,
         RandomForestClassificationModel,
     )
 
-    preprocessor_path = str(MODEL_DIR / "preprocessor")
-
-    preprocessor = PipelineModel.load(preprocessor_path)
+    preprocessor = PipelineModel.load(
+        str(MODEL_DIR / "preprocessor")
+    )
 
     models = {
-        "Logistic Regression": LogisticRegressionClassificationModel.load(
+        "Logistic Regression": LogisticRegressionModel.load(
             str(MODEL_DIR / "logistic_regression")
         ),
         "Decision Tree": DecisionTreeClassificationModel.load(
