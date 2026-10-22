@@ -147,21 +147,6 @@ with open(MODEL_DIR / "metadata.json", encoding="utf-8") as f:
 
 
 
-JAVA_HOME = r"C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot"
-HADOOP_HOME = r"C:\Hadoop"
-
-os.environ["JAVA_HOME"] = JAVA_HOME
-os.environ["HADOOP_HOME"] = HADOOP_HOME
-os.environ["PATH"] = (
-    os.path.join(HADOOP_HOME, "bin")
-    + os.pathsep
-    + os.path.join(JAVA_HOME, "bin")
-    + os.pathsep
-    + os.environ.get("PATH", "")
-)
-
-os.environ["SPARK_LOCAL_IP"] = "127.0.0.1"
-
 # Import PySpark only after configuring the environment
 from pyspark.sql import SparkSession
 
@@ -225,6 +210,34 @@ def get_spark():
 # --------------------------------------------------
 # LOADING SCREEN
 # --------------------------------------------------
+
+@st.cache_resource
+def load_models():
+    from pyspark.ml import PipelineModel
+    from pyspark.ml.classification import (
+        LogisticRegressionClassificationModel,
+        DecisionTreeClassificationModel,
+        RandomForestClassificationModel,
+    )
+
+    preprocessor_path = str(MODEL_DIR / "preprocessor")
+
+    preprocessor = PipelineModel.load(preprocessor_path)
+
+    models = {
+        "Logistic Regression": LogisticRegressionClassificationModel.load(
+            str(MODEL_DIR / "logistic_regression")
+        ),
+        "Decision Tree": DecisionTreeClassificationModel.load(
+            str(MODEL_DIR / "decision_tree")
+        ),
+        "Random Forest": RandomForestClassificationModel.load(
+            str(MODEL_DIR / "random_forest")
+        ),
+    }
+
+    return preprocessor, models
+
 
 def show_loading_screen():
     image_path = Path(__file__).parent / "assets" / "speed.png"
@@ -476,15 +489,6 @@ except Exception as e:
     st.exception(e)
     st.stop()
 
-
-loading_placeholder = show_loading_screen()
-
-try:
-    spark = get_spark()
-    df = load_data()
-    preprocessor, models = load_models()
-
-    loading_placeholder.empty()
 
 except Exception as e:
     loading_placeholder.empty()
