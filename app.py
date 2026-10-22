@@ -444,14 +444,12 @@ def load_data():
 
     spark = get_spark()
 
-    df = (
+    return (
         spark.read
         .option("header", True)
         .option("inferSchema", True)
         .csv(str(temp_path))
     )
-
-    return df
 
 loading_placeholder = show_loading_screen()
 
