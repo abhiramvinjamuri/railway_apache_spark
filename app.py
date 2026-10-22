@@ -100,8 +100,9 @@ def set_page_background(image_name):
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_DIR = BASE_DIR / "models"
 
-DATA_PATH = Path(
-    r"D:\Mtech DS\Big Data Ecosystem\CASE STUDY\ir_train.csv"
+DATA_URL = (
+    "https://huggingface.co/datasets/"
+    "abhiramvinjamuri/railway-delay-data/resolve/main/ir_train.csv"
 )
 
 # --------------------------------------------------
@@ -431,17 +432,26 @@ def show_loading_screen():
 
 @st.cache_resource
 def load_data():
+    import requests
+    import tempfile
+    from pathlib import Path
+
+    response = requests.get(DATA_URL, timeout=300)
+    response.raise_for_status()
+
+    temp_path = Path(tempfile.gettempdir()) / "ir_train.csv"
+    temp_path.write_bytes(response.content)
+
     spark = get_spark()
 
     df = (
         spark.read
         .option("header", True)
         .option("inferSchema", True)
-        .csv(str(DATA_PATH))
+        .csv(str(temp_path))
     )
 
     return df
-
 
 loading_placeholder = show_loading_screen()
 
