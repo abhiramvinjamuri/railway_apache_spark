@@ -1750,15 +1750,7 @@ elif page == "Train Delay Predictor":
                 status_text.write(stages[0][1])
                 progress_bar.progress(5)
 
-                spark = SparkSession.builder \
-                    .master("local[*]") \
-                    .appName("RailwayDelayPrediction") \
-                    .getOrCreate()
-
-                for progress, message in stages[1:3]:
-                    status_text.write(message)
-                    progress_bar.progress(progress)
-                    time.sleep(0.2)
+                
 
                 spark_input = spark.createDataFrame(input_df)
 
