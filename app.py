@@ -181,10 +181,11 @@ def get_spark():
 @st.cache_resource
 def load_models():
     from pyspark.ml.classification import (
-    LogisticRegressionModel,
-    DecisionTreeClassificationModel,
-    RandomForestClassificationModel,
-)
+        LogisticRegressionModel,
+        DecisionTreeClassificationModel,
+        RandomForestClassificationModel,
+    )
+
     preprocessor = PipelineModel.load(
         str(MODEL_DIR / "preprocessor")
     )
@@ -202,7 +203,6 @@ def load_models():
     }
 
     return preprocessor, models
-
 
 def show_loading_screen():
     image_path = Path(__file__).parent / "assets" / "speed.png"
