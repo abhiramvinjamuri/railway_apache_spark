@@ -172,40 +172,6 @@ def get_spark():
     if not java:
         raise RuntimeError("Java was not found in PATH.")
 
-    # Resolve the actual Java executable and derive JAVA_HOME.
-    java_real = Path(java).resolve()
-    java_home = java_real.parent.parent
-    os.environ["JAVA_HOME"] = str(java_home)
-
-    # Test whether Java itself starts successfully.
-    result = subprocess.run(
-        [java, "-version"],
-        capture_output=True,
-        text=True,
-        timeout=15
-    )
-
-    st.write("Java executable:", java)
-    st.write("Resolved Java path:", str(java_real))
-    st.write("JAVA_HOME:", os.environ["JAVA_HOME"])
-    st.write("Java exit code:", result.returncode)
-
-    if result.stdout:
-        st.code(result.stdout)
-
-    if result.stderr:
-        st.code(result.stderr)
-
-    if result.returncode != 0:
-        raise RuntimeError("Java failed to start. See diagnostic output above.")
-
-    return (
-        SparkSession.builder
-        .appName("RailwayDelayRiskPrediction")
-        .master("local[2]")
-        .config("spark.driver.memory", "1g")
-        .getOrCreate()
-    )
 
 # --------------------------------------------------
 # LOADING SCREEN
