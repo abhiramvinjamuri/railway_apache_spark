@@ -1,0 +1,23 @@
+{
+  "Logistic Regression": {
+    "Accuracy": 0.8614795697203715,
+    "Weighted Precision": 0.8585765787719399,
+    "Weighted Recall": 0.8614795697203715,
+    "Weighted F1": 0.8592848877693618,
+    "ROC-AUC": 0.9230761717452011
+  },
+  "Decision Tree": {
+    "Accuracy": 0.834343676850129,
+    "Weighted Precision": 0.828794488430834,
+    "Weighted Recall": 0.8343436768501291,
+    "Weighted F1": 0.8286452446404984,
+    "ROC-AUC": 0.8255288561316648
+  },
+  "Random Forest": {
+    "Accuracy": 0.8233566079133572,
+    "Weighted Precision": 0.8205814751562708,
+    "Weighted Recall": 0.8233566079133572,
+    "Weighted F1": 0.8086175621665704,
+    "ROC-AUC": 0.8798310122032849
+  }
+}
