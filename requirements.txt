@@ -1,6 +1,4 @@
 streamlit
-pandas
-plotly
 pyspark==4.0.4
-numpy
+pandas
 requests
