@@ -1,7 +1,7 @@
 import os
 import json
 from pathlib import Path
-import time
+
 import streamlit as st
 import pandas as pd
 import base64
@@ -16,6 +16,7 @@ from pyspark.ml.classification import (
     DecisionTreeClassificationModel,
     RandomForestClassificationModel,
 )
+
 import os
 import sys
 import streamlit as st
@@ -439,12 +440,9 @@ def load_data():
         .csv(dataset_path)
     )
 
-
 # --------------------------------------------------
 # LOAD DATA AND SAVED MODELS
 # --------------------------------------------------
-
-loading_screen = show_loading_screen()
 
 spark = get_spark()
 df = load_data()
@@ -465,7 +463,8 @@ models = {
     ),
 }
 
-loading_screen.empty()
+
+
 
 # --------------------------------------------------
 # SIDEBAR NAVIGATION
@@ -2372,4 +2371,3 @@ with next_col:
 
 if page_changed:
     scroll_to_top()
-
