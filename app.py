@@ -191,46 +191,21 @@ def get_spark():
 # --------------------------------------------------
 
 
-@st.cache_resource
-def load_models():
-    preprocessor = PipelineModel.load(
-        str(MODEL_DIR / "preprocessor")
-    )
-
-    models = {
-        "Logistic Regression": LogisticRegressionModel.load(
-            str(MODEL_DIR / "logistic_regression")
-        ),
-        "Decision Tree": DecisionTreeClassificationModel.load(
-            str(MODEL_DIR / "decision_tree")
-        ),
-        "Random Forest": RandomForestClassificationModel.load(
-            str(MODEL_DIR / "random_forest")
-        ),
-    }
-
-    return preprocessor, models
-
 def show_loading_screen():
-    image_path = Path(__file__).parent / "assets" / "speed.png"
-
-    with open(image_path, "rb") as f:
-        image_data = base64.b64encode(f.read()).decode("utf-8")
-
     placeholder = st.empty()
 
-    html = f"""
+    html = """
     <!DOCTYPE html>
     <html>
     <head>
     <meta charset="UTF-8">
 
     <style>
-        * {{
+        * {
             box-sizing: border-box;
-        }}
+        }
 
-        html, body {{
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -239,138 +214,121 @@ def show_loading_screen():
             font-family: Arial, sans-serif;
             color: white;
             overflow: hidden;
-        }}
+        }
 
-        .loading-screen {{
-            width: 100%;
+        .loading-screen {
             min-height: 100vh;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
-        }}
+            padding: 12px;
+        }
 
-        .loading-card {{
+        .loading-card {
             width: 100%;
-            max-width: 850px;
-            padding: 25px;
+            max-width: 600px;
+            padding: 38px 30px;
             text-align: center;
             border: 1px solid #343442;
             border-radius: 18px;
             background: #13131c;
-        }}
+        }
 
-        h2 {{
-            margin: 0 0 18px;
-            font-size: 29px;
-            color: white;
-        }}
-
-        .image-container {{
-            width: 100%;
-            height: 390px;
+        /* Train icon */
+        .icon {
+            width: 66px;
+            height: 66px;
+            margin: 0 auto 20px;
+            border: 2px solid #555568;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-        }}
+            font-size: 31px;
+            color: #ffffff;
+            animation: trainPulse 2s ease-in-out infinite;
+        }
 
-        .loading-image {{
+        @keyframes trainPulse {
+            0%, 100% {
+                transform: scale(1);
+                border-color: #555568;
+            }
+            50% {
+                transform: scale(1.06);
+                border-color: #a6a6b8;
+            }
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            font-size: 27px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .subtitle {
+            color: #a6a6b8;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0 auto 28px;
+        }
+
+        .spinner {
+            width: 38px;
+            height: 38px;
+            margin: 0 auto 22px;
+            border: 3px solid #343442;
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .bar {
             width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }}
-
-        .captions {{
-            position: relative;
-            height: 55px;
-            margin: 18px 0;
-            font-size: 18px;
-            font-weight: bold;
-        }}
-
-        .captions span {{
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 5px;
-            opacity: 0;
-            visibility: hidden;
-            animation: caption-cycle 42s infinite;
-        }}
-
-        .captions span:nth-child(1) {{ animation-delay: 0s; }}
-        .captions span:nth-child(2) {{ animation-delay: 3s; }}
-        .captions span:nth-child(3) {{ animation-delay: 6s; }}
-        .captions span:nth-child(4) {{ animation-delay: 9s; }}
-        .captions span:nth-child(5) {{ animation-delay: 12s; }}
-        .captions span:nth-child(6) {{ animation-delay: 15s; }}
-        .captions span:nth-child(7) {{ animation-delay: 18s; }}
-        .captions span:nth-child(8) {{ animation-delay: 21s; }}
-        .captions span:nth-child(9) {{ animation-delay: 24s; }}
-        .captions span:nth-child(10) {{ animation-delay: 27s; }}
-        .captions span:nth-child(11) {{ animation-delay: 30s; }}
-        .captions span:nth-child(12) {{ animation-delay: 33s; }}
-        .captions span:nth-child(13) {{ animation-delay: 36s; }}
-        .captions span:nth-child(14) {{ animation-delay: 39s; }}
-
-        @keyframes caption-cycle {{
-            0%, 6.5% {{
-                opacity: 1;
-                visibility: visible;
-            }}
-            7.2%, 100% {{
-                opacity: 0;
-                visibility: hidden;
-            }}
-        }}
-
-        .bar {{
-            width: 100%;
-            height: 7px;
+            height: 5px;
             background: #302f3b;
             border-radius: 10px;
             overflow: hidden;
-        }}
+        }
 
-        .bar-fill {{
-            width: 30%;
+        .bar-fill {
+            width: 35%;
             height: 100%;
-            background: white;
+            background: #d6d6e3;
             border-radius: 10px;
-            animation: move-bar 1.4s ease-in-out infinite alternate;
-        }}
+            animation: progress 1.8s ease-in-out infinite;
+        }
 
-        @keyframes move-bar {{
-            from {{ transform: translateX(0); }}
-            to {{ transform: translateX(230%); }}
-        }}
+        @keyframes progress {
+            0% {
+                transform: translateX(-110%);
+            }
+            100% {
+                transform: translateX(300%);
+            }
+        }
 
-        .status {{
-            margin: 14px 0 0;
-            color: #aaaab8;
+        .status {
+            margin: 18px 0 0;
             font-size: 13px;
-        }}
+            color: #a6a6b8;
+        }
 
-        @media (max-width: 600px) {{
-            .loading-card {{
-                padding: 18px;
-            }}
-
-            h2 {{
-                font-size: 23px;
-            }}
-
-            .image-container {{
-                height: 300px;
-            }}
-
-            .captions {{
-                font-size: 15px;
-            }}
-        }}
+        .footer {
+            margin-top: 26px;
+            font-size: 11px;
+            color: #686879;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
     </style>
     </head>
 
@@ -378,40 +336,28 @@ def show_loading_screen():
         <div class="loading-screen">
             <div class="loading-card">
 
-                <h2>Chat, we are loading!!!!!!</h2>
+                <div class="icon">&#128646;</div>
 
-                <div class="image-container">
-                    <img
-                        class="loading-image"
-                        src="data:image/png;base64,{image_data}"
-                        alt="Speed loading meme"
-                    >
-                </div>
+                <h2>Railway Delay Prediction</h2>
 
-                <div class="captions">
-                    <span>your train is late. so is this page 🚂</span>
-                    <span>loading faster than Indian Railways 🚄</span>
-                    <span>faster than tatkal booking. probably 🎟️</span>
-                    <span>hope you guys will like our larp 🎭</span>
-                    <span>this project was a canon event 🎬</span>
-                    <span>academic comeback or generational fumble? 📉</span>
-                    <span>well, the dataset is synthetic. please let our marks be real🥀</span>
-                    <span>hang on, almost there.. ⏳</span>
-                    <span>bro is NOT done loading 😭</span>
-                    <span>the professor better appreciate this 🙏</span>
-                    <span>loading... just like our academic comeback 📉</span>
-                    <span>if you see this, the code hasn't crashed yet 💀</span>
-                    <span>bro is NOT done loading 😭</span>
-                    <span>the professor better appreciate this 🙏</span>
-                </div>
+                <p class="subtitle">
+                    Initializing the prediction system.
+                    Please wait while the required components load.
+                </p>
+
+                <div class="spinner"></div>
 
                 <div class="bar">
                     <div class="bar-fill"></div>
                 </div>
 
                 <p class="status">
-                    Starting Spark · Loading models · Praying to Java ☕
+                    Initializing Spark · Loading dataset · Preparing models
                 </p>
+
+                <div class="footer">
+                    Big Data Ecosystem Project
+                </div>
 
             </div>
         </div>
@@ -427,42 +373,16 @@ def show_loading_screen():
 
 @st.cache_resource
 def load_data():
-    import requests
-    import tempfile
-    from pathlib import Path
-
-    response = requests.get(DATA_URL, timeout=300)
-    response.raise_for_status()
-
-    temp_path = Path(tempfile.gettempdir()) / "ir_train.csv"
-    temp_path.write_bytes(response.content)
-
     spark = get_spark()
 
-    return (
+    df = (
         spark.read
         .option("header", True)
         .option("inferSchema", True)
-        .csv(str(temp_path))
+        .csv(str(DATA_PATH))
     )
 
-loading_placeholder = show_loading_screen()
-
-try:
-    spark = get_spark()
-    df = load_data()
-    preprocessor, models = load_models()
-
-    loading_placeholder.empty()
-
-except Exception as e:
-    loading_placeholder.empty()
-    st.error("Unable to load Spark, the dataset, or the exported models.")
-    st.exception(e)
-    st.info(
-        "Check Java, the model folders, and Spark compatibility."
-    )
-    st.stop()
+    return df
 
 
 
@@ -526,7 +446,7 @@ if page == "Introduction":
     st.header("Dataset Overview")
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Training Records", "15 Lakhs")
+    col1.metric("Total Records", "15 Lakhs")
     col2.metric("Dataset Columns", "45")
     col3.metric("Task", "Binary Classification")
 
