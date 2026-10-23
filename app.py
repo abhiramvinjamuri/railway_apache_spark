@@ -23,6 +23,16 @@ import streamlit as st
 from pyspark.sql import SparkSession
 
 
+import streamlit as st
+import time
+
+# Initial loading screen
+with st.spinner("Please wait, loading Railway Delay Prediction Dashboard..."):
+    # Put your initial data loading and model setup here
+    pass
+
+
+
 ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets")
 
 RAILWAY_BANNER = os.path.join(ASSETS_DIR, "railway_banner.png")
