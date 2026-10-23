@@ -35,17 +35,40 @@ def scroll_to_top():
     components.html(
         """
         <script>
-            window.parent.document.querySelector(
-                'section.main'
-            ).scrollTo({top: 0, behavior: 'instant'});
+        function resetParentScroll() {
+            try {
+                const doc = window.parent.document;
 
-            window.parent.window.scrollTo({
-                top: 0,
-                behavior: 'instant'
-            });
+                const selectors = [
+                    '[data-testid="stAppViewContainer"]',
+                    '[data-testid="stMain"]',
+                    'section.main'
+                ];
+
+                selectors.forEach(selector => {
+                    const element = doc.querySelector(selector);
+                    if (element) {
+                        element.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: "instant"
+                        });
+                    }
+                });
+
+                window.parent.scrollTo(0, 0);
+            } catch (error) {
+                console.log("Scroll reset unavailable", error);
+            }
+        }
+
+        resetParentScroll();
+        setTimeout(resetParentScroll, 100);
+        setTimeout(resetParentScroll, 300);
+        setTimeout(resetParentScroll, 700);
         </script>
         """,
-        height=0,
+        height=1,
     )
 
 
@@ -467,9 +490,8 @@ page = st.sidebar.radio(
     key="page_navigation",
 )
 
-if st.session_state.get("previous_page") != page:
-    st.session_state["previous_page"] = page
-    scroll_to_top()
+page_changed = st.session_state.get("previous_page") != page
+st.session_state["previous_page"] = page
 
 
 
@@ -2346,4 +2368,7 @@ with next_col:
             on_click=navigate_to_page,
             args=(pages[current_index + 1],),
         )
+
+if page_changed:
+    scroll_to_top()
 
