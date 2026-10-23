@@ -1,7 +1,7 @@
 import os
 import json
 from pathlib import Path
-
+import time
 import streamlit as st
 import pandas as pd
 import base64
@@ -16,21 +16,10 @@ from pyspark.ml.classification import (
     DecisionTreeClassificationModel,
     RandomForestClassificationModel,
 )
-
 import os
 import sys
 import streamlit as st
 from pyspark.sql import SparkSession
-
-
-import streamlit as st
-import time
-
-# Initial loading screen
-with st.spinner("Please wait, loading Railway Delay Prediction Dashboard..."):
-    # Put your initial data loading and model setup here
-    pass
-
 
 
 ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets")
@@ -450,28 +439,34 @@ def load_data():
         .csv(dataset_path)
     )
 
+
 # --------------------------------------------------
 # LOAD DATA AND SAVED MODELS
 # --------------------------------------------------
 
-spark = get_spark()
-df = load_data()
+loading_screen = show_loading_screen()
 
-preprocessor = PipelineModel.load(
-    str(MODEL_DIR / "preprocessor")
-)
+try:
+    spark = get_spark()
+    df = load_data()
 
-models = {
-    "Logistic Regression": LogisticRegressionModel.load(
-        str(MODEL_DIR / "logistic_regression")
-    ),
-    "Decision Tree": DecisionTreeClassificationModel.load(
-        str(MODEL_DIR / "decision_tree")
-    ),
-    "Random Forest": RandomForestClassificationModel.load(
-        str(MODEL_DIR / "random_forest")
-    ),
-}
+    preprocessor = PipelineModel.load(
+        str(MODEL_DIR / "preprocessor")
+    )
+
+    models = {
+        "Logistic Regression": LogisticRegressionModel.load(
+            str(MODEL_DIR / "logistic_regression")
+        ),
+        "Decision Tree": DecisionTreeClassificationModel.load(
+            str(MODEL_DIR / "decision_tree")
+        ),
+        "Random Forest": RandomForestClassificationModel.load(
+            str(MODEL_DIR / "random_forest")
+        ),
+    }
+finally:
+    loading_screen.empty()
 
 
 
