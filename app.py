@@ -457,9 +457,6 @@ pages = [
     "Train Delay Predictor",
 ]
 
-if st.session_state.get("previous_page") != page:
-    st.session_state["previous_page"] = page
-    scroll_to_top()
 
 def navigate_to_page(destination):
     st.session_state["page_navigation"] = destination
@@ -470,6 +467,9 @@ page = st.sidebar.radio(
     key="page_navigation",
 )
 
+if st.session_state.get("previous_page") != page:
+    st.session_state["previous_page"] = page
+    scroll_to_top()
 
 
 
