@@ -136,6 +136,37 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+# /* Muted input boxes */
+.stApp input,
+.stApp textarea,
+.stApp [data-baseweb="select"] > div {
+    background-color: #334155 !important;
+    color: #F8FAFC !important;
+    border-color: #64748B !important;
+}
+
+# /* Search input placeholder */
+.stApp input::placeholder,
+.stApp textarea::placeholder {
+    color: #CBD5E1 !important;
+    opacity: 1 !important;
+}
+
+# /* Dataframe and table borders */
+[data-testid="stDataFrame"],
+[data-testid="stTable"] {
+    border: 1px solid #64748B !important;
+    border-radius: 8px !important;
+}
+
+# /* Search box focus */
+.stApp input:focus,
+.stApp textarea:focus {
+    border-color: #38BDF8 !important;
+    box-shadow: 0 0 0 1px #38BDF8 !important;
+}
+
+
 
 # --------------------------------------------------
 # DASHBOARD BACKGROUND
