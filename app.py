@@ -30,6 +30,24 @@ ANALYTICS_BG = os.path.join(ASSETS_DIR, "analytics_background.png")
 DELAY_CONCEPT = os.path.join(ASSETS_DIR, "delay_concept.png")
 PREDICTION_WORKFLOW = os.path.join(ASSETS_DIR, "prediction_workflow.png")
 
+import streamlit.components.v1 as components
+def scroll_to_top():
+    components.html(
+        """
+        <script>
+            window.parent.document.querySelector(
+                'section.main'
+            ).scrollTo({top: 0, behavior: 'instant'});
+
+            window.parent.window.scrollTo({
+                top: 0,
+                behavior: 'instant'
+            });
+        </script>
+        """,
+        height=0,
+    )
+
 
 
 # --------------------------------------------------
@@ -438,6 +456,10 @@ pages = [
     "Delay Insights",
     "Train Delay Predictor",
 ]
+
+if st.session_state.get("previous_page") != page:
+    st.session_state["previous_page"] = page
+    scroll_to_top()
 
 def navigate_to_page(destination):
     st.session_state["page_navigation"] = destination
