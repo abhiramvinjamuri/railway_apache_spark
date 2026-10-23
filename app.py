@@ -371,19 +371,56 @@ def show_loading_screen():
     return placeholder
 
 
-@st.cache_resource
-def load_data():
-    spark = get_spark()
+import tempfile
+import urllib.request
 
-    df = (
-        spark.read
-        .option("header", True)
-        .option("inferSchema", True)
-        .csv(str(DATA_PATH))
+@st.cache_resource
+def download_dataset():
+    dataset_path = os.path.join(
+        tempfile.gettempdir(),
+        "ir_train.csv"
     )
 
-    return df
+    if not os.path.exists(dataset_path):
+        urllib.request.urlretrieve(DATA_URL, dataset_path)
 
+    return dataset_path
+
+
+@st.cache_resource
+def load_data():
+    spark_session = get_spark()
+    dataset_path = download_dataset()
+
+    return (
+        spark_session.read
+        .option("header", True)
+        .option("inferSchema", True)
+        .csv(dataset_path)
+    )
+
+# --------------------------------------------------
+# LOAD DATA AND SAVED MODELS
+# --------------------------------------------------
+
+spark = get_spark()
+df = load_data()
+
+preprocessor = PipelineModel.load(
+    str(MODEL_DIR / "preprocessor")
+)
+
+models = {
+    "Logistic Regression": LogisticRegressionModel.load(
+        str(MODEL_DIR / "logistic_regression")
+    ),
+    "Decision Tree": DecisionTreeClassificationModel.load(
+        str(MODEL_DIR / "decision_tree")
+    ),
+    "Random Forest": RandomForestClassificationModel.load(
+        str(MODEL_DIR / "random_forest")
+    ),
+}
 
 
 
