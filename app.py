@@ -389,21 +389,26 @@ def load_data():
 
 
 # --------------------------------------------------
-# SIDEBAR
+# SIDEBAR NAVIGATION
 # --------------------------------------------------
 
-st.sidebar.title("Navigation")
+pages = [
+    "Introduction",
+    "Overview",
+    "Big Data Technologies",
+    "Model Comparison",
+    "Model Evaluation",
+    "Delay Insights",
+    "Train Delay Predictor",
+]
+
+def navigate_to_page(destination):
+    st.session_state["page_navigation"] = destination
 
 page = st.sidebar.radio(
     "Go to",
-    [
-        "Introduction",
-        "Overview",
-        "Model Comparison",
-        "Model Evaluation",
-        "Delay Insights",
-        "Train Delay Predictor",
-    ],
+    pages,
+    key="page_navigation",
 )
 
 
@@ -803,7 +808,423 @@ if page == "Overview":
         "The charts show the distribution of the target label."
     )
 
+# --------------------------------------------------
+# BIG DATA TECHNOLOGIES
+# --------------------------------------------------
 
+elif page == "Big Data Technologies":
+    set_page_background("tech.png")
+
+    # Page styling: dark cards with readable white text
+    st.markdown("""
+    <style>
+    .tech-card {
+        background: rgba(12, 17, 29, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 12px;
+        padding: 20px;
+        height: 100%;
+        margin-bottom: 12px;
+    }
+
+    .tech-card h3 {
+        color: #FFFFFF;
+        font-size: 20px;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .tech-card p, .tech-card li {
+        color: #E5E7EB;
+        font-size: 15px;
+        line-height: 1.65;
+    }
+
+    .tech-label {
+        color: #67E8F9;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .workflow-step {
+        background: rgba(12, 17, 29, 0.94);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 12px;
+        padding: 18px 12px;
+        text-align: center;
+        min-height: 150px;
+    }
+
+    .workflow-number {
+        color: #67E8F9;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .workflow-title {
+        color: #FFFFFF;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .workflow-description {
+        color: #E5E7EB;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .workflow-arrow {
+        color: #67E8F9;
+        font-size: 26px;
+        text-align: center;
+        padding-top: 45px;
+    }
+
+    .section-note {
+        color: #F3F4F6;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    div[data-testid="stExpander"] {
+        background: rgba(12, 17, 29, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 10px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # --------------------------------------------------
+    # PAGE INTRODUCTION
+    # --------------------------------------------------
+
+    st.title("Big Data Technologies")
+    st.markdown(
+        """
+        <p class="section-note">
+        This page explains how Apache Spark, Spark SQL and PySpark MLlib
+        support our Railway Delay Prediction project, from processing
+        journey records to building machine-learning models.
+        </p>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.divider()
+
+    # --------------------------------------------------
+    # PROJECT WORKFLOW
+    # --------------------------------------------------
+
+    st.header("How the Project Works")
+    st.caption(
+        "The journey from raw railway records to a delay-risk prediction."
+    )
+
+    workflow = [
+        (
+            "01",
+            "Railway Dataset",
+            "Load journey records and inspect the available columns."
+        ),
+        (
+            "02",
+            "Apache Spark",
+            "Process records using Spark DataFrames and transformations."
+        ),
+        (
+            "03",
+            "Spark SQL",
+            "Query structured data and summarize journey patterns."
+        ),
+        (
+            "04",
+            "PySpark MLlib",
+            "Prepare features and train classification models."
+        ),
+        (
+            "05",
+            "Prediction",
+            "Use a trained model to classify a journey's delay risk."
+        ),
+    ]
+
+    # Five connected stages, displayed in one row on wide screens
+    workflow_columns = st.columns([1, 0.16, 1, 0.16, 1, 0.16, 1, 0.16, 1])
+
+    positions = [0, 2, 4, 6, 8]
+
+    for i, (number, title, description) in enumerate(workflow):
+        with workflow_columns[positions[i]]:
+            st.markdown(
+                f"""
+                <div class="workflow-step">
+                    <div class="workflow-number">STEP {number}</div>
+                    <div class="workflow-title">{title}</div>
+                    <div class="workflow-description">{description}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        if i < len(workflow) - 1:
+            with workflow_columns[positions[i] + 1]:
+                st.markdown(
+                    '<div class="workflow-arrow">→</div>',
+                    unsafe_allow_html=True,
+                )
+
+    st.markdown(
+        """
+        <p class="section-note">
+        <b>Final output:</b> The selected model predicts whether the
+        arrival delay is likely to exceed 15 minutes. The dashboard
+        then presents model results and journey insights.
+        </p>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.divider()
+
+    # --------------------------------------------------
+    # TECHNOLOGY 1: APACHE SPARK
+    # --------------------------------------------------
+
+    st.header("1. Apache Spark and PySpark")
+
+    col1, col2 = st.columns([1.3, 1], gap="large")
+
+    with col1:
+        st.markdown("""
+        <div class="tech-card">
+            <div class="tech-label">Data Processing</div>
+            <h3>Apache Spark</h3>
+            <p>
+            Apache Spark is a data-processing framework designed to
+            handle large datasets efficiently. PySpark provides its
+            Python interface, allowing us to work with Spark using Python.
+            </p>
+            <p><b>How it helps this project</b></p>
+            <ul>
+                <li>Loads the railway CSV into a Spark DataFrame.</li>
+                <li>Provides operations to inspect and transform records.</li>
+                <li>Supports filtering, grouping and calculating summaries.</li>
+                <li>Provides the data-processing foundation for MLlib.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("#### Example: Load the dataset")
+
+        st.code(
+            '''df = (
+    spark.read
+    .option("header", True)
+    .option("inferSchema", True)
+    .csv("ir_train.csv")
+)
+
+df.show(5)
+df.printSchema()''',
+            language="python",
+        )
+
+        st.caption(
+            "This is an illustrative example. The deployed application "
+            "may obtain the CSV from a remote dataset source."
+        )
+
+    st.divider()
+
+    # --------------------------------------------------
+    # TECHNOLOGY 2: SPARK SQL
+    # --------------------------------------------------
+
+    st.header("2. Spark SQL")
+
+    col1, col2 = st.columns([1.3, 1], gap="large")
+
+    with col1:
+        st.markdown("""
+        <div class="tech-card">
+            <div class="tech-label">Structured Data Analysis</div>
+            <h3>Spark SQL</h3>
+            <p>
+            Spark SQL lets us query structured data using familiar SQL
+            statements. It works with Spark DataFrames and can summarize
+            large collections of records.
+            </p>
+            <p><b>How it helps this project</b></p>
+            <ul>
+                <li>Counts delayed and non-delayed journeys.</li>
+                <li>Groups records by categories for analysis.</li>
+                <li>Helps identify patterns in the dataset.</li>
+                <li>Makes data analysis easier to demonstrate and explain.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("#### Example: Count journey status")
+
+        st.code(
+            '''df.createOrReplaceTempView("railway_data")
+
+delay_counts = spark.sql("""
+    SELECT is_delayed, COUNT(*) AS total
+    FROM railway_data
+    GROUP BY is_delayed
+    ORDER BY is_delayed
+""")
+
+delay_counts.show()''',
+            language="python",
+        )
+
+        st.caption(
+            "`is_delayed = 0` means the delay does not exceed 15 minutes; "
+            "`is_delayed = 1` means it exceeds 15 minutes."
+        )
+
+    st.divider()
+
+    # --------------------------------------------------
+    # TECHNOLOGY 3: PYSPARK MLLIB
+    # --------------------------------------------------
+
+    st.header("3. PySpark MLlib")
+
+    st.markdown("""
+    <p class="section-note">
+    PySpark MLlib provides machine-learning algorithms and tools that
+    work with Spark DataFrames. In this project, it supports the
+    classification task of predicting whether a journey's arrival
+    delay will exceed 15 minutes.
+    </p>
+    """, unsafe_allow_html=True)
+
+    model_cols = st.columns(3, gap="medium")
+
+    model_info = [
+        (
+            "Logistic Regression",
+            "Estimates the probability of a journey belonging to the delayed class."
+        ),
+        (
+            "Decision Tree",
+            "Uses feature-based decision rules to classify a journey."
+        ),
+        (
+            "Random Forest",
+            "Combines multiple decision trees to make a classification."
+        ),
+    ]
+
+    for col, (name, description) in zip(model_cols, model_info):
+        with col:
+            st.markdown(
+                f"""
+                <div class="tech-card">
+                    <div class="tech-label">MLlib Model</div>
+                    <h3>{name}</h3>
+                    <p>{description}</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    st.subheader("Example: Build an MLlib pipeline")
+
+    with st.expander("View illustrative training code"):
+        st.code(
+            '''from pyspark.ml import Pipeline
+from pyspark.ml.feature import VectorAssembler
+from pyspark.ml.classification import LogisticRegression
+
+assembler = VectorAssembler(
+    inputCols=feature_cols,
+    outputCol="features"
+)
+
+classifier = LogisticRegression(
+    featuresCol="features",
+    labelCol="is_delayed"
+)
+
+pipeline = Pipeline(
+    stages=[assembler, classifier]
+)
+
+model = pipeline.fit(train_df)''',
+            language="python",
+        )
+
+        st.caption(
+            "This is a simplified example, not a replacement for the "
+            "actual training pipeline. The project's saved preprocessing "
+            "pipeline and trained models are loaded by the dashboard."
+        )
+
+    st.markdown("""
+    <div class="tech-card">
+        <div class="tech-label">Why MLlib?</div>
+        <h3>From Data to Prediction</h3>
+        <p>
+        MLlib provides the classification algorithms and pipeline
+        components. After training, the saved preprocessing pipeline
+        and model can be loaded to process new journey details and
+        generate a prediction without retraining the model every time.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # --------------------------------------------------
+    # TECHNOLOGY SUMMARY
+    # --------------------------------------------------
+
+    st.header("Role of Each Technology")
+
+    summary_df = pd.DataFrame({
+        "Technology": [
+            "Apache Spark / PySpark",
+            "Spark SQL",
+            "PySpark MLlib",
+            "Streamlit",
+        ],
+        "Main Role": [
+            "Load and process railway records",
+            "Query and summarize structured data",
+            "Train and run delay classification models",
+            "Display analysis and predictions through a dashboard",
+        ],
+    })
+
+    st.dataframe(
+        summary_df,
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    st.markdown("""
+    <div class="tech-card">
+        <h3>Key Takeaway</h3>
+        <p>
+        Spark provides the data-processing foundation, Spark SQL supports
+        structured analysis, and MLlib provides the machine-learning
+        models. Together with Streamlit, these technologies help turn
+        railway journey records into an interactive delay-prediction system.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # --------------------------------------------------
 # MODEL COMPARISON
@@ -1820,3 +2241,50 @@ elif page == "Train Delay Predictor":
                     "Check that the saved preprocessing pipeline, input columns, "
                     "and selected model are compatible."
                 )
+
+
+# --------------------------------------------------
+# BOTTOM PAGE NAVIGATION
+# --------------------------------------------------
+
+st.divider()
+
+current_index = pages.index(page)
+
+prev_col, info_col, next_col = st.columns([1, 2, 1])
+
+with prev_col:
+    if current_index > 0:
+        st.button(
+            "← Previous",
+            key="bottom_previous",
+            use_container_width=True,
+            on_click=navigate_to_page,
+            args=(pages[current_index - 1],),
+        )
+
+with info_col:
+    st.markdown(
+        f"""
+        <div style="
+            text-align: center;
+            padding-top: 8px;
+            color: #FFFFFF;
+            font-size: 14px;
+        ">
+            Page {current_index + 1} of {len(pages)}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with next_col:
+    if current_index < len(pages) - 1:
+        st.button(
+            "Next →",
+            key="bottom_next",
+            use_container_width=True,
+            on_click=navigate_to_page,
+            args=(pages[current_index + 1],),
+        )
+
