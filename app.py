@@ -446,30 +446,26 @@ def load_data():
 
 loading_screen = show_loading_screen()
 
-try:
-    spark = get_spark()
-    df = load_data()
+spark = get_spark()
+df = load_data()
 
-    preprocessor = PipelineModel.load(
-        str(MODEL_DIR / "preprocessor")
-    )
+preprocessor = PipelineModel.load(
+    str(MODEL_DIR / "preprocessor")
+)
 
-    models = {
-        "Logistic Regression": LogisticRegressionModel.load(
-            str(MODEL_DIR / "logistic_regression")
-        ),
-        "Decision Tree": DecisionTreeClassificationModel.load(
-            str(MODEL_DIR / "decision_tree")
-        ),
-        "Random Forest": RandomForestClassificationModel.load(
-            str(MODEL_DIR / "random_forest")
-        ),
-    }
-finally:
-    loading_screen.empty()
+models = {
+    "Logistic Regression": LogisticRegressionModel.load(
+        str(MODEL_DIR / "logistic_regression")
+    ),
+    "Decision Tree": DecisionTreeClassificationModel.load(
+        str(MODEL_DIR / "decision_tree")
+    ),
+    "Random Forest": RandomForestClassificationModel.load(
+        str(MODEL_DIR / "random_forest")
+    ),
+}
 
-
-
+loading_screen.empty()
 
 # --------------------------------------------------
 # SIDEBAR NAVIGATION
