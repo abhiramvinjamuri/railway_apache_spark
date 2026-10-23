@@ -136,37 +136,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# /* Muted input boxes */
-.stApp input,
-.stApp textarea,
-.stApp [data-baseweb="select"] > div {
-    background-color: #334155 !important;
-    color: #F8FAFC !important;
-    border-color: #64748B !important;
-}
-
-# /* Search input placeholder */
-.stApp input::placeholder,
-.stApp textarea::placeholder {
-    color: #CBD5E1 !important;
-    opacity: 1 !important;
-}
-
-# /* Dataframe and table borders */
-[data-testid="stDataFrame"],
-[data-testid="stTable"] {
-    border: 1px solid #64748B !important;
-    border-radius: 8px !important;
-}
-
-# /* Search box focus */
-.stApp input:focus,
-.stApp textarea:focus {
-    border-color: #38BDF8 !important;
-    box-shadow: 0 0 0 1px #38BDF8 !important;
-}
-
-
 
 # --------------------------------------------------
 # DASHBOARD BACKGROUND
@@ -2443,50 +2412,3 @@ with next_col:
 
 if page_changed:
     scroll_to_top()
-
-
-
-
-# --------------------------------------------------
-# FIX BOTTOM PREVIOUS / NEXT BUTTON STYLING
-# --------------------------------------------------
-
-st.markdown("""
-<style>
-
-/* Previous and Next buttons */
-.st-key-bottom_previous button,
-.st-key-bottom_next button {
-    background-color: #1E293B !important;
-    color: #FFFFFF !important;
-    border: 1px solid #64748B !important;
-    border-radius: 8px !important;
-    min-height: 42px !important;
-}
-
-/* Keep button text visible */
-.st-key-bottom_previous button *,
-.st-key-bottom_next button * {
-    color: #FFFFFF !important;
-}
-
-/* Disabled buttons */
-.st-key-bottom_previous button:disabled,
-.st-key-bottom_next button:disabled {
-    background-color: #334155 !important;
-    color: #CBD5E1 !important;
-    border: 1px solid #475569 !important;
-    opacity: 1 !important;
-    cursor: not-allowed !important;
-}
-
-/* Hover effect for enabled buttons */
-.st-key-bottom_previous button:not(:disabled):hover,
-.st-key-bottom_next button:not(:disabled):hover {
-    background-color: #2563EB !important;
-    border-color: #60A5FA !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
