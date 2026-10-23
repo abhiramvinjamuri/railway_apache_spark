@@ -2415,35 +2415,3 @@ if page_changed:
 
 
 
-# Fix bright white inputs in light mode
-st.markdown("""
-<style>
-/* Search boxes and text inputs */
-.stApp input,
-.stApp textarea,
-.stApp [data-baseweb="select"] > div {
-    background-color: #334155 !important;
-    color: #F8FAFC !important;
-    border-color: #64748B !important;
-}
-
-/* Placeholder text */
-.stApp input::placeholder,
-.stApp textarea::placeholder {
-    color: #CBD5E1 !important;
-    opacity: 1 !important;
-}
-
-/* Input labels */
-.stApp [data-testid="stWidgetLabel"] p {
-    color: #F1F5F9 !important;
-}
-
-/* Table borders */
-[data-testid="stTable"],
-[data-testid="stDataFrame"] {
-    border: 1px solid #64748B !important;
-    border-radius: 8px !important;
-}
-</style>
-""", unsafe_allow_html=True)
