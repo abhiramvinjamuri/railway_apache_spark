@@ -83,17 +83,58 @@ st.set_page_config(
     layout="wide",
 )
 
+
 st.markdown("""
 <style>
+/* Keep text readable over the dark dashboard background */
+.stApp,
+.stApp p,
+.stApp label,
+.stApp [data-testid="stMarkdownContainer"] p {
+    color: #F1F5F9;
+}
+
+/* Headings */
+.stApp h1,
+.stApp h2,
+.stApp h3,
+.stApp h4 {
+    color: #FFFFFF !important;
+}
+
+/* Captions and secondary text */
+.stApp [data-testid="stCaptionContainer"] {
+    color: #CBD5E1 !important;
+}
+
+/* Metric cards */
 [data-testid="stMetric"] {
-    background: rgba(20, 24, 38, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(20, 24, 38, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.20);
     border-radius: 12px;
     padding: 18px 22px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
+
+[data-testid="stMetric"] label,
+[data-testid="stMetricValue"],
+[data-testid="stMetricDelta"] {
+    color: #FFFFFF !important;
+}
+
+/* Dataframes and tables */
+[data-testid="stDataFrame"],
+[data-testid="stTable"] {
+    color: #F1F5F9;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    color: #F1F5F9;
+}
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # --------------------------------------------------
